@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum</title>
+</head>
+<body>
+    {{if .username}}
+        <div>
+            <form action="/profile/update/username/save" method="post">
+                <label for="username">Please type your New Username :</label><br>
+                <input type="text" id="username" name="username" required><br>
+                <label for="current">Please type your Password :</label><br>
+                <input type="password" id="current" name="current" required><br>
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    {{end}}
+    {{if .email}}
+        <div>
+            <form action="/profile/update/email/save" method="post">
+                <label for="email">Please type your New Email :</label><br>
+                <input type="text" id="email" name="email" required><br>
+                <label for="current">Please type your Password :</label><br>
+                <input type="password" id="current" name="current" required><br>
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    {{end}}
+    {{if .password}}
+        <div>
+            <form action="/profile/update/password/save" method="post">
+                <label for="current">Please type your Current Password :</label><br>
+                <input type="password" id="current" name="current" required><br>
+                <label for="new">Please type your New Password :</label><br>
+                <input type="password" id="new" name="new" required><br>
+                <label for="confirm">Please Confirm your New Password :</label><br>
+                <input type="password" id="confirm" name="confirm" required><br>
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    {{end}}
+</body>
+</html>

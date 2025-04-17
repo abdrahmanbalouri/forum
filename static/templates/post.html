@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>post</title>
+    <link rel="stylesheet" href="/static/css/post.css">
+</head>
+<body>
+    <body>
+
+      <form action="/" method="post">
+        <div class="main-container">
+            <div class="sidebar">
+                <div class="profile-section">
+                    <p id="username"> {{.}} </p>
+                </div>
+            </div>
+            <div class="feed-container">
+                <div class="post-form">
+                    <textarea id="post-content" name="content" placeholder="What's on your mind?" maxlength="500"></textarea>
+                    <select id="post-interest" name="interest"> 
+                        <option value="" disabled selected>Choose an interest</option>
+                        <option value="Sports">Sports ⚽</option>
+                        <option value="Food">Food 🍴</option>
+                        <option value="Music">Music 🎶</option>
+                        <option value="Culture">Culture 🕌</option>
+                        <option value="Programation">Programation 🖥️​​</option>
+                    </select>
+                    <button type="submit">Post</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    
+      </form>
+      
+      
+        
+</body>
+</html>

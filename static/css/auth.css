@@ -1,0 +1,135 @@
+/* Reset default styles and ensure responsiveness */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  body {
+    background: linear-gradient(135deg, #1a1a2e, #16213e); /* Dark gradient for a modern vibe */
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  /* Form container styling */
+  .form-container {
+    background: rgba(255, 255, 255, 0.05); /* Glassmorphism effect */
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 30px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Heading */
+  .form-container h1 {
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  
+  /* Form styling */
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  /* Input fields and labels */
+  .form-container div {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  label {
+    color: #e0e0e0;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+  }
+  
+  input {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+  }
+  
+  input:focus {
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 10px rgba(0, 255, 163, 0.5); /* Vibrant green glow like Kick */
+  }
+  
+  /* Placeholder styling */
+  input::placeholder {
+    color: #b0b0b0;
+  }
+  
+  /* Submit button */
+  button {
+    background: linear-gradient(90deg, #00ff9d, #00d4ff); /* Kick-inspired gradient */
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    color: #1a1a2e;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 255, 163, 0.5);
+  }
+  
+  button:active {
+    transform: translateY(0);
+  }
+  
+  /* Login link */
+  .form-container p {
+    color: #e0e0e0;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9rem;
+  }
+  
+  .form-container a {
+    color: #00ff9d;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .form-container a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Responsive design */
+  @media (max-width: 480px) {
+    .form-container {
+      padding: 20px;
+      max-width: 90%;
+    }
+  
+    .form-container h1 {
+      font-size: 1.5rem;
+    }
+  
+    input, button {
+      font-size: 0.9rem;
+      padding: 10px;
+    }
+  }

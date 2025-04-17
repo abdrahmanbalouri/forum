@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: url('1.jpg') no-repeat;
+    background-size: cover;
+    background-position:center ;
+}
+
+.page-login {
+    width: 400px;
+    padding: 30px;
+   
+   background-color: transparent;
+    border: 2px solid rgb(225, 225, 225,0.5);
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.page-login h1 {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.input-login {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    margin: 20px 0;
+}
+
+.input-login input {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    outline: none;
+    border: 2px solid rgba(225, 225, 225, 0.2);
+    border-radius: 25px;
+    font-size: 16px;
+    color: white;
+    padding: 15px 20px;
+}
+
+.input-login input::placeholder {
+    color: #ddd;
+}
+
+.input-login i {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    color: #fff7f7;
+}
+
+.remember-login {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin: 10px 0;
+}
+
+.remember-login label input {
+    accent-color: white;
+    margin-right: 5px;
+}
+
+.remember-login a {
+    color: white;
+    text-decoration: none;
+}
+
+.remember-login a:hover {
+    text-decoration: underline;
+}
+
+
+.btn {
+    width: 100%;
+    padding: 12px;
+    background: white;
+    color: purple;
+    font-size: 16px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: #ddd;
+}
+
+
+.regist {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.regist a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.regist a:hover {
+    text-decoration: underline;
+}
