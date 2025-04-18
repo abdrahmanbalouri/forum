@@ -32,13 +32,11 @@ func main() {
 	forumux.HandleFunc("/profile/delete", handlers.AuthMidleware(handlers.ServeDelete))
 	forumux.HandleFunc("/profile/delete/confirm", handlers.AuthMidleware(handlers.DeleteConfirmation))
 
-	forumux.HandleFunc("/like", handlers.AuthMidleware(handlers.LikeHandler))
 	forumux.HandleFunc("/post", handlers.AuthMidleware(handlers.PostHandler))
 	forumux.HandleFunc("/comment", handlers.AuthMidleware(handlers.CommentHandler))
 	forumux.HandleFunc("/reaction", handlers.AuthMidleware(handlers.ReactionHandler))
 
 	forumux.HandleFunc("/", handlers.RootHandler)
-	forumux.HandleFunc("/static/", handlers.StaticHnadler)
 
 	fmt.Println("Server running on ", SERVERURL)
 	err := http.ListenAndServe(PORT, forumux)

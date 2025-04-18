@@ -5,21 +5,24 @@ import (
 	"os"
 )
 
-func StaticHnadler(w http.ResponseWriter, r *http.Request) {
+func StaticHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		http.Error(w, "Oops!?, Method Not Allowed try again", http.StatusMethodNotAllowed)
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		return
 	}
 	url := r.URL.Path[1:]
 	file, err := os.Stat(url)
 	if err != nil {
 		if os.IsNotExist(err) {
-			http.Error(w, "Oops!?, Error Not Found", http.StatusNotFound)
+			http.Error(w, "Error Not Found", http.StatusNotFound)
+			return
 		}
-		http.Error(w, "Oops!?, Internal Server Error", http.StatusInternalServerError)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
 	}
 	if file.IsDir() {
-		http.Error(w, "Oops!?, Error Not Found", http.StatusNotFound)
+		http.Error(w, "Error Not Found", http.StatusNotFound)
+		return
 	}
 	http.ServeFile(w, r, url)
 }
-

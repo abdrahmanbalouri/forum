@@ -46,7 +46,7 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Récupérer tous les posts
-	posts, err := GetAllPosts()
+	posts, err := GetAllPosts(userID)
 	if err != nil {
 		http.Error(w, "Failed to retrieve posts", http.StatusInternalServerError)
 		return
@@ -91,7 +91,7 @@ func CreatePost(userID int, content, interest string) {
 	fmt.Println("Post created:", content, interest)
 }
 
-func GetAllPosts() ([]Post, error) {
+func GetAllPosts(userID int) ([]Post, error) {
 	rows, err := database.DB.Query(`
 		SELECT 
 			p.id, 
@@ -100,11 +100,12 @@ func GetAllPosts() ([]Post, error) {
 			p.interest, 
 			p.created_at,
 			(SELECT COUNT(*) FROM post_reactions WHERE post_id = p.id AND reaction_type = 'like') as likes,
-			(SELECT COUNT(*) FROM post_reactions WHERE post_id = p.id AND reaction_type = 'dislike') as dislikes
+			(SELECT COUNT(*) FROM post_reactions WHERE post_id = p.id AND reaction_type = 'dislike') as dislikes,
+			(SELECT reaction_type FROM post_reactions WHERE post_id = p.id AND user_id = ?) as user_reaction
 		FROM posts p
 		JOIN users u ON p.user_id = u.id
 		ORDER BY p.created_at DESC
-	`)
+	`, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -113,6 +114,7 @@ func GetAllPosts() ([]Post, error) {
 	var posts []Post
 	for rows.Next() {
 		var post Post
+		var userReaction sql.NullString
 		err := rows.Scan(
 			&post.PostID,
 			&post.Username,
@@ -121,10 +123,12 @@ func GetAllPosts() ([]Post, error) {
 			&post.CreatedAt,
 			&post.Likes,
 			&post.Dislikes,
+			&userReaction,
 		)
 		if err != nil {
 			continue
 		}
+		post.UserReaction = userReaction.String
 		posts = append(posts, post)
 	}
 	return posts, nil

@@ -93,7 +93,7 @@
         function validateComment(form) {
             const content = form.content.value.trim();
             if (content === '') {
-                alert('Comment cannot be empty');
+                window.alert('Comment cannot be empty');
                 return false;
             }
             return true;
