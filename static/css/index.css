@@ -1,240 +1,313 @@
-/* Reset default styles and ensure responsiveness */
+/* /static/css/index.css */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Arial', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 body {
-    background: linear-gradient(135deg, #1a1a2e, #16213e); /* Dark gradient for a modern vibe */
+    background: linear-gradient(135deg, #1a1a2e, #16213e); /* Gradient from second CSS */
+    color: #e0e0e0; /* Light text for dark background */
+    line-height: 1.5;
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     padding: 20px;
 }
 
-/* Navigation bar styling */
+/* Navigation Header */
 .nav {
-    width: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Slightly darkened navbar */
+    background: rgba(255, 255, 255, 0.08); /* Translucent glass effect */
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: none;
     padding: 10px 20px;
-    position: fixed;
+    position: sticky;
     top: 0;
-    left: 0;
+    z-index: 100;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
-}
-
-.profile a {
-    color: #ffffff;
-    text-decoration: none;
-    font-size: 1rem;
-    margin-left: 10px;
-}
-
-.profile a:hover {
-    text-decoration: underline;
-}
-
-/* Post container styling */
-main {
-    width: 100%;
-    max-width: 900px;
-    margin-top: 80px; /* Space below the fixed nav */
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.post {
-    background: rgba(255, 255, 255, 0.1);
-    margin: 15px 0;
-    padding: 15px;
-    border-radius: 10px;
-    width: 100%;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
-.post p {
-    color: #ffffff;
-    font-size: 1rem;
+.profile a {
+    text-decoration: none;
+    color: #e0e0e0;
+    font-weight: 600;
+    margin-left: 15px;
+    font-size: 14px;
+    transition: color 0.2s ease;
 }
 
-button {
-    background: linear-gradient(90deg, #00ff9d, #00d4ff); /* Kick-inspired gradient */
-    border: none;
-    padding: 12px;
-    border-radius: 8px;
-    color: #1a1a2e;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    margin-top: 10px;
+.profile a:hover {
+    color: #00ff9d;
 }
 
-button:hover {
+/* Main Content */
+main {
+    max-width: 935px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+/* Post Styling */
+.post {
+    background: rgba(255, 255, 255, 0.08); /* Glassmorphic background */
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    margin-bottom: 24px;
+    padding: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Deeper shadow */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.post:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 255, 163, 0.5);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
-button:active {
-    transform: translateY(0);
+.post p {
+    margin-bottom: 8px;
+    font-size: 14px;
 }
 
-/* Form container styling */
-.post-container {
-    width: 100%;
-    max-width: 600px;
-    margin-top: 30px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.post p strong {
+    font-weight: 600;
+    color: #e0e0e0;
 }
 
-form {
-    margin: 10px 0;
-    width: 100%;
+.post p em {
+    color: #cccccc; /* Lighter muted text */
+    font-size: 12px;
 }
 
-form button {
-    background: linear-gradient(90deg, #00ff9d, #00d4ff);
-    border: none;
-    padding: 12px;
-    border-radius: 8px;
-    color: #1a1a2e;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 10px;
-}
-
-/* Placeholder styling */
-input::placeholder {
-    color: #b0b0b0;
-}
-
-input {
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    color: #ffffff;
-    font-size: 1rem;
-    outline: none;
-    transition: all 0.3s ease;
-}
-
-input:focus {
-    background: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 0 10px rgba(0, 255, 163, 0.5); /* Vibrant green glow like Kick */
-}
-
-input, button {
-    font-size: 1rem;
-    padding: 12px;
-}
-
-/* Comment styling */
-.comments {
-    margin-top: 15px;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-}
-
-.comment {
-    padding: 8px;
-    margin: 5px 0;
-    border-left: 3px solid rgba(0, 255, 163, 0.3);
-}
-
-.comment p {
-    margin: 3px 0;
-}
-
-.comment em {
-    font-size: 0.8rem;
-    color: #b0b0b0;
-}
-
-input[type="text"] {
-    width: 100%;
-    padding: 8px;
-    margin: 5px 0;
-    border: none;
-    border-radius: 4px;
-    background: rgba(255, 255, 255, 0.1);
-    color: #ffffff;
-}
-
-input[type="text"]:focus {
-    outline: none;
-    background: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 0 5px rgba(0, 255, 163, 0.4);
-}
-
-/* Reaction buttons styling */
+/* Reactions */
 .reactions {
-    margin: 8px 0;
     display: flex;
-    gap: 10px;
+    gap: 12px;
+    margin: 12px 0;
 }
 
 .reaction-form {
     display: inline-flex;
-    gap: 8px;
-    margin: 0;
+    gap: 6px;
 }
 
 .reaction-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 6px 12px;
-    background: rgba(255, 255, 255, 0.1);
+    background: none;
     border: none;
-    border-radius: 4px;
-    color: #b0b0b0;
     cursor: pointer;
-    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #cccccc;
+    font-size: 14px;
+    transition: color 0.2s ease, transform 0.1s ease;
+}
+
+.reaction-btn i {
+    font-size: 16px;
 }
 
 .reaction-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-1px);
+    color: #e0e0e0;
+    transform: scale(1.15);
 }
 
 .reaction-btn.active {
-    background: rgba(0, 255, 163, 0.2);
-    color: #00ff9d;
+    color: #00ff9d; /* Vibrant green from second CSS */
+    font-weight: 600;
 }
 
-.reaction-btn.active:hover {
-    background: rgba(0, 255, 163, 0.3);
+/* Comment Form */
+form[action="/comment"] {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Responsive design */
-@media (max-width: 480px) {
-    body {
-        padding: 10px;
+form[action="/comment"] input[type="text"] {
+    flex: 1;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.05); /* Translucent input */
+    color: #e0e0e0;
+    font-size: 14px;
+    outline: none;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+form[action="/comment"] input[type="text"]::placeholder {
+    color: #cccccc;
+}
+
+form[action="/comment"] input[type="text"]:focus {
+    background: rgba(0, 200, 255, 0.1);
+    box-shadow: 0 0 6px rgba(0, 255, 200, 0.5);
+}
+
+form[action="/comment"] button {
+    background: linear-gradient(90deg, #00ff9d, #00d4ff); /* Gradient button */
+    color: #1a1a2e;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+form[action="/comment"] button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 255, 163, 0.5);
+}
+
+/* Comments Section */
+.comments {
+    margin-top: 12px;
+}
+
+.show-comments-btn {
+    background: none;
+    border: none;
+    color: #cccccc;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px 0;
+    text-align: left;
+    transition: color 0.2s ease;
+}
+
+.show-comments-btn:hover {
+    color: #00d4ff;
+}
+
+.comments-list {
+    padding-top: 8px;
+    transition: opacity 0.3s ease;
+}
+
+.comments-list[style*="display: block"] {
+    opacity: 1;
+}
+
+.comments-list[style*="display: none"] {
+    opacity: 0;
+}
+
+.comment {
+    margin-bottom: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03); /* Subtle glass effect for comments */
+    border-radius: 8px;
+    padding: 8px 12px;
+}
+
+.comment p {
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.comment p strong {
+    font-weight: 600;
+    color: #e0e0e0;
+}
+
+.comment p em {
+    font-size: 12px;
+    color: #cccccc;
+}
+
+.no-comments {
+    color: #cccccc;
+    font-size: 14px;
+    text-align: center;
+    padding: 8px 0;
+}
+
+/* No Posts Fallback */
+main p {
+    text-align: center;
+    color: #cccccc;
+    font-size: 16px;
+    padding: 20px;
+}
+
+/* Post Button Container */
+.post-container {
+    max-width: 935px;
+    margin: 20px auto;
+    padding: 0 20px;
+    text-align: center;
+}
+
+.post-container form button {
+    background: linear-gradient(90deg, #00ff9d, #00d4ff);
+    color: #1a1a2e;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.post-container form button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 255, 163, 0.5);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    main {
+        padding: 0 12px;
     }
 
-    .post-container, .post {
-        width: 90%;
+    .nav {
+        padding: 8px 12px;
     }
 
-    button, input {
-        font-size: 0.9rem;
-        padding: 10px;
+    .profile a {
+        margin-left: 10px;
+        font-size: 12px;
     }
 
-    .post p {
-        font-size: 0.9rem;
+    .post {
+        padding: 12px;
+        border-radius: 8px;
+    }
+
+    form[action="/comment"] input[type="text"] {
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+
+    form[action="/comment"] button {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .reaction-btn i {
+        font-size: 14px;
+    }
+
+    .show-comments-btn {
+        font-size: 12px;
+    }
+
+    .comment p {
+        font-size: 12px;
+    }
+
+    .comment p em {
+        font-size: 11px;
     }
 }

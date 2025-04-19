@@ -25,10 +25,9 @@
         {{if .Posts}}
             {{range .Posts}}
                 <div class="post">
-                    <p> {{.Post.Title}} </p>
-
+                    <p>{{.Post.Title}}</p>
                     <p><strong>{{.Post.Username}}</strong>: {{.Post.Content}} <em>({{.Post.Interest}})</em></p>
-                     <p><em>Posted on: {{.Post.CreatedAt}}</em></p>
+                    <p><em>Posted on: {{.Post.CreatedAt}}</em></p>
 
                     <div class="reactions">
                         <form action="/reaction" method="post" class="reaction-form">
@@ -44,40 +43,44 @@
                             </button>
                         </form>
                     </div>
-                    
-                    
+
                     <form action="/comment" method="post" onsubmit="return validateComment(this);">
                         <input type="hidden" name="post_id" value="{{.Post.PostID}}">
                         <input type="text" name="content" placeholder="Write a comment" required>
                         <button type="submit">Comment</button>
                     </form>
-                    
+
                     <div class="comments">
-                        <h4>Comments:</h4>
-                        {{range .Comments}}
-                            <div class="comment">
-                                <p><strong>{{.Username}}</strong>: {{.Content}}</p>
-                                <p><em>Commented on: {{.CreatedAt}}</em></p>
-                                <div class="reactions">
-                                    <!-- Comment reactions -->
+                        <button class="show-comments-btn" onclick="toggleComments(this, '{{.Post.PostID}}')">
+                            {{if .Comments}}View all {{len .Comments}} comments{{else}}No comments yet{{end}}
+                        </button>
+                        <div class="comments-list" id="comments-{{.Post.PostID}}" style="display: none;">
+                            {{range .Comments}}
+                                <div class="comment">
+                                    <p><strong>{{.Username}}</strong>: {{.Content}}</p>
+                                    <p><em>Commented on: {{.CreatedAt}}</em></p>
+                                    <div class="reactions">
+                                        <!-- Comment reactions (extend if needed) -->
+                                    </div>
                                 </div>
-                            </div>
-                        {{else}}
-                            <p>.......</p>
-                        {{end}}
+                            {{else}}
+                                <p class="no-comments">No comments yet.</p>
+                            {{end}}
+                        </div>
                     </div>
                 </div>
             {{end}}
         {{else}}
             <p>No posts found.</p>
-        {{end}} 
+        {{end}}
     </main>
 
-    <div class="post-container"> 
+    <div class="post-container">
         <form action="/post" method="post">
-            <button type="submit">Go to /post</button> 
-        </form>  
+            <button type="submit">Go to /post</button>
+        </form>
     </div>
+
     <script>
         function validateComment(form) {
             const content = form.content.value.trim();
@@ -86,6 +89,13 @@
                 return false;
             }
             return true;
+        }
+
+        function toggleComments(button, postId) {
+            const commentsList = document.getElementById(`comments-${postId}`);
+            const isHidden = commentsList.style.display === 'none' || commentsList.style.display === '';
+            commentsList.style.display = isHidden ? 'block' : 'none';
+            button.textContent = isHidden ? 'Hide comments' : `View all ${commentsList.querySelectorAll('.comment').length} comments`;
         }
     </script>
 </body>
