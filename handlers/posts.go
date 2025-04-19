@@ -17,7 +17,7 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	sessionToken := cookie.Value
 
-	email := database.GetUserEmailBySession(sessionToken)
+	email := database.GetUserdatadromsesion(sessionToken)
 
 	config.GLOBAL_TEMPLATE.ExecuteTemplate(w, "post.html", email)
 }

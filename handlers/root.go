@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"time"
 
 	"forum/config"
 	"forum/database"
@@ -11,21 +12,47 @@ import (
 )
 
 type Post struct {
-	PostID       int
-	Content      string
-	Interest     string
-	Title        string
-	Username     string
-	CreatedAt    string
-	Likes        int
-	Dislikes     int
-	UserReaction string
+	PostID               int
+	Content              string
+	Interest             string
+	Title                string
+	Username             string
+	CreatedAt            string
+	Likes                int
+	Dislikes             int
+	UserReaction         string
+	MinutesSinceCreation int
 }
 
 func RootHandler(w http.ResponseWriter, r *http.Request) {
 	sessionCookie, err := r.Cookie("session_token")
 	if err != nil || sessionCookie.Value == "" {
-		config.GLOBAL_TEMPLATE.ExecuteTemplate(w, "index.html", map[string]interface{}{"Authenticated": false})
+		posts, err := GetAllPosts(0) // Pass 0 or a default user ID for unauthenticated users
+		if err != nil {
+			http.Error(w, "Failed to retrieve posts", http.StatusInternalServerError)
+			fmt.Println(err)
+			return
+		}
+
+		var postsWithComments []map[string]interface{}
+		for _, post := range posts {
+			comments, err := GetCommentsForPost(post.PostID, 0) // Pass 0 for unauthenticated users
+			if err != nil {
+				continue
+			}
+			postData := map[string]interface{}{
+				"Post":     post,
+				"Comments": comments,
+			}
+			postsWithComments = append(postsWithComments, postData)
+		}
+
+		templateData := map[string]interface{}{
+			"Authenticated": false,
+			"Posts":         postsWithComments,
+		}
+
+		config.GLOBAL_TEMPLATE.ExecuteTemplate(w, "index.html", templateData)
 		return
 	}
 
@@ -40,10 +67,10 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		content := r.FormValue("content")
 		interest := r.FormValue("interest")
-		title:= r.FormValue("title")
-     //fmt.Println(title)
-		if content != "" && title!="" {
-			CreatePost(userID, content, interest,title)
+		title := r.FormValue("title")
+		// fmt.Println(title)
+		if content != "" && title != "" {
+			CreatePost(userID, content, interest, title)
 		}
 	}
 
@@ -85,7 +112,7 @@ func CreatePost(userID int, content, interest string, title string) {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(userID, content, interest,title)
+	_, err = stmt.Exec(userID, content, interest, title)
 	if err != nil {
 		fmt.Println("Error executing statement:", err)
 		return
@@ -137,6 +164,16 @@ func GetAllPosts(userID int) ([]Post, error) {
 			continue
 		}
 		post.UserReaction = userReaction.String
+
+		// Parse CreatedAt string to time.Time using the correct format
+		createdAtTime, err := time.Parse(time.RFC3339, post.CreatedAt)
+		if err != nil {
+			fmt.Println("Error parsing CreatedAt time:", err)
+			continue
+		}
+		// Calculate minutes since the post was created
+		post.MinutesSinceCreation = int(time.Since(createdAtTime).Minutes())
+
 		posts = append(posts, post)
 	}
 	return posts, nil
@@ -179,6 +216,13 @@ func GetCommentsForPost(postID int, currentUserID int) ([]models.Comment, error)
 			continue
 		}
 		comment.UserReaction = userReaction.String
+		createdAtTime, err := time.Parse(time.RFC3339, comment.CreatedAt)
+		if err != nil {
+			fmt.Println("Error parsing CreatedAt time:", err)
+			continue
+		}
+		// Calculate minutes since the post was created
+		comment.MinutesSinceCreation = int(time.Since(createdAtTime).Minutes())
 		comments = append(comments, comment)
 	}
 	return comments, nil

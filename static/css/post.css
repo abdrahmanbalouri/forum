@@ -60,6 +60,7 @@ body {
   padding: 12px;
   border: none;
   border-radius: 8px;
+  resize: none;
   background: rgba(255, 255, 255, 0.05);
   color: #ffffff;
   font-size: 1rem;

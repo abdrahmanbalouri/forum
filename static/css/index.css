@@ -243,9 +243,8 @@ main p {
 /* Post Button Container */
 .post-container {
     max-width: 935px;
-    margin: 20px auto;
+    margin: 30px;
     padding: 0 20px;
-    text-align: center;
 }
 
 .post-container form button {

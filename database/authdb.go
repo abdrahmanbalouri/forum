@@ -34,11 +34,11 @@ func GetUserHash(username string) (int, string) {
 	return id, hash
 }
 
-func GetUserEmailBySession(sessionToken string) string {
+func GetUserdatadromsesion(sessionToken string) string {
 	var email string
 
 	err := DB.QueryRow(`
-		SELECT users.email
+		SELECT users.username
 		FROM sessions
 		JOIN users ON sessions.user_id = users.id
 		WHERE sessions.session_token = ? AND sessions.expires_at > datetime('now')

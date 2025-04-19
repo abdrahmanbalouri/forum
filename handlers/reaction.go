@@ -39,11 +39,13 @@ func ReactionHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var table string
+	var table, idColumn string
 	if targetType == "post" {
 		table = "post_reactions"
+		idColumn = "post_id"
 	} else if targetType == "comment" {
 		table = "comment_reactions"
+		idColumn = "comment_id"
 	} else {
 		http.Error(w, "Invalid target type", http.StatusBadRequest)
 		return
@@ -51,7 +53,7 @@ func ReactionHandler(w http.ResponseWriter, r *http.Request) {
 
 	var existingReaction string
 	err = database.DB.QueryRow(
-		"SELECT reaction_type FROM "+table+" WHERE post_id = ? AND user_id = ?",
+		"SELECT reaction_type FROM "+table+" WHERE "+idColumn+" = ? AND user_id = ?",
 		targetID, userID,
 	).Scan(&existingReaction)
 
@@ -59,7 +61,7 @@ func ReactionHandler(w http.ResponseWriter, r *http.Request) {
 		if err == sql.ErrNoRows {
 			// No existing reaction, insert the new reaction
 			_, err = database.DB.Exec(
-				"INSERT INTO "+table+" (post_id, user_id, reaction_type) VALUES (?, ?, ?)",
+				"INSERT INTO "+table+" ("+idColumn+", user_id, reaction_type) VALUES (?, ?, ?)",
 				targetID, userID, reactionType,
 			)
 			if err != nil {
@@ -74,13 +76,13 @@ func ReactionHandler(w http.ResponseWriter, r *http.Request) {
 		if existingReaction == reactionType {
 			// If the same reaction exists, remove it
 			_, err = database.DB.Exec(
-				"DELETE FROM "+table+" WHERE post_id = ? AND user_id = ?",
+				"DELETE FROM "+table+" WHERE "+idColumn+" = ? AND user_id = ?",
 				targetID, userID,
 			)
 		} else {
 			// Update to the new reaction type
 			_, err = database.DB.Exec(
-				"UPDATE "+table+" SET reaction_type = ? WHERE post_id = ? AND user_id = ?",
+				"UPDATE "+table+" SET reaction_type = ? WHERE "+idColumn+" = ? AND user_id = ?",
 				reactionType, targetID, userID,
 			)
 		}
