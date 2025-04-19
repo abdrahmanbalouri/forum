@@ -29,7 +29,7 @@ func AuthMidleware(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), userIDKey, user_id) //avoid collisions
+		ctx := context.WithValue(r.Context(), userIDKey, user_id) 
 		next(w, r.WithContext(ctx))
 	}
 }

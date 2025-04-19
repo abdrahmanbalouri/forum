@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"forum/config"
@@ -47,6 +48,12 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 			postsWithComments = append(postsWithComments, postData)
 		}
 
+		// Check if posts are empty and handle the error
+		if len(postsWithComments) == 0 {
+			http.Error(w, "No posts found for the selected interest.", http.StatusNotFound)
+			return
+		}
+
 		templateData := map[string]interface{}{
 			"Authenticated": false,
 			"Posts":         postsWithComments,
@@ -66,9 +73,11 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == http.MethodPost {
 		content := r.FormValue("content")
-		interest := r.FormValue("interest")
+		r.ParseForm()
+
+		interests := r.Form["interest"]
 		title := r.FormValue("title")
-		// fmt.Println(title)
+		interest := strings.Join(interests, "#")
 		if content != "" && title != "" {
 			CreatePost(userID, content, interest, title)
 		}
@@ -93,6 +102,12 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 			"Comments": comments,
 		}
 		postsWithComments = append(postsWithComments, postData)
+	}
+
+	// Check if posts are empty and handle the error
+	if len(postsWithComments) == 0 {
+		http.Error(w, "No posts found.", http.StatusNotFound)
+		return
 	}
 
 	templateData := map[string]interface{}{
@@ -226,4 +241,58 @@ func GetCommentsForPost(postID int, currentUserID int) ([]models.Comment, error)
 		comments = append(comments, comment)
 	}
 	return comments, nil
+}
+
+func GetPostsByInterest(interest string, user int) ([]Post, error) {
+	rows, err := database.DB.Query(`
+        SELECT 
+            p.id, 
+            u.username, 
+            p.content, 
+            p.title,
+            p.interest, 
+            p.created_at,
+            (SELECT COUNT(*) FROM post_reactions WHERE post_id = p.id AND reaction_type = 'like') as likes,
+            (SELECT COUNT(*) FROM post_reactions WHERE post_id = p.id AND reaction_type = 'dislike') as dislikes,
+            (SELECT reaction_type FROM post_reactions WHERE post_id = p.id AND user_id = ?) as user_reaction
+        FROM posts p
+        JOIN users u ON p.user_id = u.id
+        WHERE p.interest LIKE ?
+        ORDER BY p.created_at DESC
+    `, user, "%"+interest+"%")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var posts []Post
+	for rows.Next() {
+		var post Post
+		var userReaction sql.NullString
+		err := rows.Scan(
+			&post.PostID,
+			&post.Username,
+			&post.Content,
+			&post.Title,
+			&post.Interest,
+			&post.CreatedAt,
+			&post.Likes,
+			&post.Dislikes,
+			&userReaction,
+		)
+		if err != nil {
+			continue
+		}
+		createdAtTime, err := time.Parse(time.RFC3339, post.CreatedAt)
+		if err != nil {
+			fmt.Println("Error parsing CreatedAt time:", err)
+			continue
+		}
+		// Calculate minutes since the post was created
+		post.MinutesSinceCreation = int(time.Since(createdAtTime).Minutes())
+		post.UserReaction = userReaction.String
+
+		posts = append(posts, post)
+	}
+	return posts, nil
 }

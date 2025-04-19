@@ -9,21 +9,14 @@
 </head>
 <body>
     <header class="nav">
-        <div class="forum"><a href="/">FORUM</a>
-                                             </div>
+        <div class="forum"><a href="/">FORUM</a></div>
         <div class="profile">
-            {{if .Authenticated}}
-
-            
                 <a href="/profile">{{.Username}}</a>
                 <a href="/logout">Logout</a>
-            {{else}}
-                <a href="/profile">Guest</a>
-                <a href="/login">Login</a>
-                <a href="/register">Sign Up</a>
-            {{end}}
+           
         </div>
     </header>
+
     <div class="post-container">
         <form action="/post" method="post">
             <button type="submit">Create Post</button>
@@ -38,7 +31,7 @@
                 <button type="submit" name="interest" value="Food" class="interest-btn">Food 🍴</button>
                 <button type="submit" name="interest" value="Music" class="interest-btn">Music 🎶</button>
                 <button type="submit" name="interest" value="Culture" class="interest-btn">Culture 🕌</button>
-                <button type="submit" name="interest" value="Programation" class="interest-btn">Programming 🖥️​​</button>
+                <button type="submit" name="interest" value="Programming" class="interest-btn">Programming 🖥️​​</button>
             </div>
         </form>
     </div>
@@ -48,9 +41,9 @@
             {{range .Posts}}
                 <div class="post">
                     <p>{{.Post.Title}}</p>
-                    <p><strong>{{.Post.Username}}</strong>: {{.Post.Content}} </p>
-                    <p><em>({{.Post.Interest}})  </em></p>
-                    <p><em> {{.Post.MinutesSinceCreation}} <strong> minutes ago</strong> </em></p>
+                    <p><strong>{{.Post.Username}}</strong>: {{.Post.Content}}</p>
+                    <p><em>({{.Post.Interest}})</em></p>
+                    <p><em>{{.Post.MinutesSinceCreation}} <strong>minutes ago</strong></em></p>
 
                     <div class="reactions">
                         <form action="/reaction" method="post" class="reaction-form">
@@ -81,7 +74,7 @@
                             {{range .Comments}}
                                 <div class="comment">
                                     <p><strong>{{.Username}}</strong>: {{.Content}}</p>
-                                    <p><em> {{.MinutesSinceCreation}} <strong>minutes ago</strong></em></p>
+                                    <p><em>{{.MinutesSinceCreation}} <strong>minutes ago</strong></em></p>
                                     <div class="reactions">
                                         <form action="/reaction" method="post" class="reaction-form">
                                             <input type="hidden" name="target_type" value="comment">
@@ -108,8 +101,6 @@
             <p>No posts found.</p>
         {{end}}
     </main>
-
-   
 
     <script>
         function validateComment(form) {
