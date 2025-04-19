@@ -36,7 +36,10 @@ func main() {
 	forumux.HandleFunc("/comment", handlers.AuthMidleware(handlers.CommentHandler))
 	forumux.HandleFunc("/reaction", handlers.AuthMidleware(handlers.ReactionHandler))
 
+
 	forumux.HandleFunc("/", handlers.RootHandler)
+	forumux.HandleFunc("/static/", handlers.StaticHandler)
+
 
 	fmt.Println("Server running on ", SERVERURL)
 	err := http.ListenAndServe(PORT, forumux)

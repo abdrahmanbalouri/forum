@@ -25,8 +25,10 @@
         {{if .Posts}}
             {{range .Posts}}
                 <div class="post">
+                    <p> {{.Post.Title}} </p>
+
                     <p><strong>{{.Post.Username}}</strong>: {{.Post.Content}} <em>({{.Post.Interest}})</em></p>
-                    <p><em>Posted on: {{.Post.CreatedAt}}</em></p>
+                     <p><em>Posted on: {{.Post.CreatedAt}}</em></p>
 
                     <div class="reactions">
                         <form action="/reaction" method="post" class="reaction-form">
@@ -42,39 +44,26 @@
                             </button>
                         </form>
                     </div>
-
-                    <!-- ===== Comment Form Section ===== -->
+                    
+                    
                     <form action="/comment" method="post" onsubmit="return validateComment(this);">
                         <input type="hidden" name="post_id" value="{{.Post.PostID}}">
                         <input type="text" name="content" placeholder="Write a comment" required>
                         <button type="submit">Comment</button>
-                    </form>  
-
-                    <!-- ===== Comments Display Section ===== -->
+                    </form>
+                    
                     <div class="comments">
                         <h4>Comments:</h4>
                         {{range .Comments}}
                             <div class="comment">
                                 <p><strong>{{.Username}}</strong>: {{.Content}}</p>
                                 <p><em>Commented on: {{.CreatedAt}}</em></p>
-                                
                                 <div class="reactions">
-                                    <form action="/reaction" method="post" class="reaction-form">
-                                        <input type="hidden" name="target_type" value="comment">
-                                        <input type="hidden" name="target_id" value="{{.ID}}">
-                                        <button type="submit" name="type" value="like" class="reaction-btn {{if eq .UserReaction "like"}}active{{end}}">
-                                            <i class="fas fa-thumbs-up"></i>
-                                            <span>{{.LikeCount}}</span>
-                                        </button>
-                                        <button type="submit" name="type" value="dislike" class="reaction-btn {{if eq .UserReaction "dislike"}}active{{end}}">
-                                            <i class="fas fa-thumbs-down"></i>
-                                            <span>{{.DislikeCount}}</span>
-                                        </button>
-                                    </form>
+                                    <!-- Comment reactions -->
                                 </div>
                             </div>
                         {{else}}
-                            <p>No comments yet!</p>
+                            <p>.......</p>
                         {{end}}
                     </div>
                 </div>

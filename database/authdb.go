@@ -1,8 +1,9 @@
 package database
 
 import (
-	"forum/models"
 	"log"
+
+	"forum/models"
 )
 
 func AddNewUser(username, email, hashedPass string) error {
@@ -32,7 +33,8 @@ func GetUserHash(username string) (int, string) {
 	}
 	return id, hash
 }
-func GetUserEmailBySession(sessionToken string) (string) {
+
+func GetUserEmailBySession(sessionToken string) string {
 	var email string
 
 	err := DB.QueryRow(`
@@ -41,15 +43,12 @@ func GetUserEmailBySession(sessionToken string) (string) {
 		JOIN users ON sessions.user_id = users.id
 		WHERE sessions.session_token = ? AND sessions.expires_at > datetime('now')
 	`, sessionToken).Scan(&email)
-
 	if err != nil {
 		log.Println(err)
 	}
 
 	return email
 }
-
-
 
 func GetUserHashById(id int) string {
 	var hash string

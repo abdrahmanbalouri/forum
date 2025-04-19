@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"database/sql"
 	"net/http"
 	"strconv"
 
@@ -38,28 +39,56 @@ func ReactionHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var query string
+	var table string
 	if targetType == "post" {
-		query = `
-			INSERT INTO post_reactions (post_id, user_id, reaction_type)
-			VALUES (?, ?, ?)
-			ON CONFLICT(post_id, user_id) DO UPDATE SET reaction_type = ?
-		`
+		table = "post_reactions"
 	} else if targetType == "comment" {
-		query = `
-			INSERT INTO comment_reactions (comment_id, user_id, reaction_type)
-			VALUES (?, ?, ?)
-			ON CONFLICT(comment_id, user_id) DO UPDATE SET reaction_type = ?
-		`
+		table = "comment_reactions"
 	} else {
 		http.Error(w, "Invalid target type", http.StatusBadRequest)
 		return
 	}
 
-	_, err = database.DB.Exec(query, targetID, userID, reactionType, reactionType)
+	var existingReaction string
+	err = database.DB.QueryRow(
+		"SELECT reaction_type FROM "+table+" WHERE post_id = ? AND user_id = ?",
+		targetID, userID,
+	).Scan(&existingReaction)
+
 	if err != nil {
-		http.Error(w, "Database error", http.StatusInternalServerError)
-		return
+		if err == sql.ErrNoRows {
+			// No existing reaction, insert the new reaction
+			_, err = database.DB.Exec(
+				"INSERT INTO "+table+" (post_id, user_id, reaction_type) VALUES (?, ?, ?)",
+				targetID, userID, reactionType,
+			)
+			if err != nil {
+				http.Error(w, "Database error", http.StatusInternalServerError)
+				return
+			}
+		} else {
+			http.Error(w, "Database error", http.StatusInternalServerError)
+			return
+		}
+	} else {
+		if existingReaction == reactionType {
+			// If the same reaction exists, remove it
+			_, err = database.DB.Exec(
+				"DELETE FROM "+table+" WHERE post_id = ? AND user_id = ?",
+				targetID, userID,
+			)
+		} else {
+			// Update to the new reaction type
+			_, err = database.DB.Exec(
+				"UPDATE "+table+" SET reaction_type = ? WHERE post_id = ? AND user_id = ?",
+				reactionType, targetID, userID,
+			)
+		}
+
+		if err != nil {
+			http.Error(w, "Database error", http.StatusInternalServerError)
+			return
+		}
 	}
 
 	http.Redirect(w, r, "/", http.StatusSeeOther)

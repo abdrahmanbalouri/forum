@@ -14,6 +14,7 @@ type Post struct {
 	PostID       int
 	Content      string
 	Interest     string
+	Title        string
 	Username     string
 	CreatedAt    string
 	Likes        int
@@ -39,9 +40,10 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		content := r.FormValue("content")
 		interest := r.FormValue("interest")
-
-		if content != "" {
-			CreatePost(userID, content, interest)
+		title:= r.FormValue("title")
+     //fmt.Println(title)
+		if content != "" && title!="" {
+			CreatePost(userID, content, interest,title)
 		}
 	}
 
@@ -49,6 +51,7 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 	posts, err := GetAllPosts(userID)
 	if err != nil {
 		http.Error(w, "Failed to retrieve posts", http.StatusInternalServerError)
+		fmt.Println(err)
 		return
 	}
 
@@ -74,15 +77,15 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 	config.GLOBAL_TEMPLATE.ExecuteTemplate(w, "index.html", templateData)
 }
 
-func CreatePost(userID int, content, interest string) {
-	stmt, err := database.DB.Prepare("INSERT INTO posts(user_id, content, interest) VALUES(?, ?, ?)")
+func CreatePost(userID int, content, interest string, title string) {
+	stmt, err := database.DB.Prepare("INSERT INTO posts(user_id, content, interest, title) VALUES(?, ?, ?,?)")
 	if err != nil {
 		fmt.Println("Error preparing statement:", err)
 		return
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(userID, content, interest)
+	_, err = stmt.Exec(userID, content, interest,title)
 	if err != nil {
 		fmt.Println("Error executing statement:", err)
 		return
@@ -97,6 +100,7 @@ func GetAllPosts(userID int) ([]Post, error) {
 			p.id, 
 			u.username, 
 			p.content, 
+			p.title,
 			p.interest, 
 			p.created_at,
 			(SELECT COUNT(*) FROM post_reactions WHERE post_id = p.id AND reaction_type = 'like') as likes,
@@ -107,7 +111,9 @@ func GetAllPosts(userID int) ([]Post, error) {
 		ORDER BY p.created_at DESC
 	`, userID)
 	if err != nil {
+		fmt.Println("Error querying posts:", err)
 		return nil, err
+
 	}
 	defer rows.Close()
 
@@ -119,6 +125,7 @@ func GetAllPosts(userID int) ([]Post, error) {
 			&post.PostID,
 			&post.Username,
 			&post.Content,
+			&post.Title,
 			&post.Interest,
 			&post.CreatedAt,
 			&post.Likes,
@@ -126,6 +133,7 @@ func GetAllPosts(userID int) ([]Post, error) {
 			&userReaction,
 		)
 		if err != nil {
+			fmt.Println(err)
 			continue
 		}
 		post.UserReaction = userReaction.String
