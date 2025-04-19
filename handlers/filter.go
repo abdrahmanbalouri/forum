@@ -34,7 +34,7 @@ func FilterHandler(w http.ResponseWriter, r *http.Request) {
 
 	var postsWithComments []map[string]interface{}
 	for _, post := range posts {
-		comments, err := GetCommentsForPost(post.PostID, 0) // Pass 0 for unauthenticated users
+		comments, err := GetCommentsForPost(post.PostID, userID) // Pass 0 for unauthenticated users
 		if err != nil {
 			continue
 		}
@@ -45,7 +45,6 @@ func FilterHandler(w http.ResponseWriter, r *http.Request) {
 		postsWithComments = append(postsWithComments, postData)
 	}
 
-	// Pass username to the template
 
 	templateData := map[string]interface{}{
 		"Posts": postsWithComments,
