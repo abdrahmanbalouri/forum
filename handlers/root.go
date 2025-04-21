@@ -78,12 +78,14 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 		interests := r.Form["interest"]
 		title := r.FormValue("title")
 		interest := strings.Join(interests, "#")
-		if content != "" && title != "" {
+		if content != "" && title != ""  {
 			CreatePost(userID, content, interest, title)
+		}else{
+			http.Redirect(w, r, "/post", http.StatusSeeOther)
+			return
 		}
 	}
 
-	// Récupérer tous les posts
 	posts, err := GetAllPosts(userID)
 	if err != nil {
 		http.Error(w, "Failed to retrieve posts", http.StatusInternalServerError)

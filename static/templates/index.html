@@ -47,9 +47,9 @@
         {{if .Posts}}
             {{range .Posts}}
                 <div class="post">
-                    <p>{{.Post.Title}}</p>
+                    <p> <strong>title:</strong> {{.Post.Title}}</p>
                     <p><strong>{{.Post.Username}}</strong>: {{.Post.Content}} </p>
-                    <p><em>({{.Post.Interest}})  </em></p>
+                    <p> <strong>Categorie: </strong> {{.Post.Interest}} </p>
                     <p><em> {{.Post.MinutesSinceCreation}} <strong> minutes ago</strong> </em></p>
 
                     <div class="reactions">
@@ -92,7 +92,7 @@
                                             </button>
                                             <button type="submit" name="type" value="dislike" class="reaction-btn {{if eq .UserReaction "dislike"}}active{{end}}">
                                                 <i class="fas fa-thumbs-down"></i>
-                                                <span>{{.DislikeCount}}</span>
+                                                <span>{{.DislikeCount}}</span>git 
                                             </button>
                                         </form>
                                     </div>
