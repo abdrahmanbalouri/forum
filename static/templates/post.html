@@ -9,7 +9,7 @@
 <body>
     <body>
 
-      <form action="/" method="post" onsubmit="return validatePostForm(this);">
+      <form action="/" method="post" enctype="multipart/form-data" onsubmit="return validatePostForm(this);">
         <div class="main-container">
             <div class="sidebar">
                 <div class="profile-section">
@@ -20,7 +20,14 @@
                 <div class="post-form">
                     <input type="text" id="post-title" name="title" placeholder="title"maxlength="50">
                     <textarea id="post-content" name="content" placeholder="What's on your mind?" maxlength="50"></textarea>
+                    <div>
+                        <label for="photo">Upload Photo:</label>
+                        <input type="file" name="photo" value="photo" ><br>
+                    </div>
+                    
+                    
                     <div class="interests">
+                        <p>Choose your interests:</p>
                         <label><input type="checkbox" name="interest" value="Sports"> Sports ⚽</label><br>
                         <label><input type="checkbox" name="interest" value="Food"> Food 🍴</label><br>
                         <label><input type="checkbox" name="interest" value="Music"> Music 🎶</label><br>

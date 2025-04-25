@@ -50,6 +50,14 @@
                     <p> <strong>title:</strong> {{.Post.Title}}</p>
                     <p><strong>{{.Post.Username}}</strong>: {{.Post.Content}} </p>
                     <p> <strong>Categorie: </strong> {{.Post.Interest}} </p>
+                    {{if ne .Post.Photo ""}}
+                    <p><strong>Photo:</strong></p>
+                    <img src="{{.Post.Photo}}" alt="Post Photo" style="max-width:300px;">
+                  {{end}}
+                  
+                  
+                  
+               
                     <p><em> {{.Post.MinutesSinceCreation}} <strong> minutes ago</strong> </em></p>
 
                     <div class="reactions">

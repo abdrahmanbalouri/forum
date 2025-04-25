@@ -3,7 +3,9 @@ package handlers
 import (
 	"database/sql"
 	"fmt"
+	"io"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -23,12 +25,13 @@ type Post struct {
 	Dislikes             int
 	UserReaction         string
 	MinutesSinceCreation int
+	Photo                string
 }
 
 func RootHandler(w http.ResponseWriter, r *http.Request) {
 	sessionCookie, err := r.Cookie("session_token")
 	if err != nil || sessionCookie.Value == "" {
-		posts, err := GetAllPosts(0) // Pass 0 or a default user ID for unauthenticated users
+		posts, err := GetAllPosts(0)
 		if err != nil {
 			http.Error(w, "Failed to retrieve posts", http.StatusInternalServerError)
 			fmt.Println(err)
@@ -37,7 +40,7 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 
 		var postsWithComments []map[string]interface{}
 		for _, post := range posts {
-			comments, err := GetCommentsForPost(post.PostID, 0) // Pass 0 for unauthenticated users
+			comments, err := GetCommentsForPost(post.PostID, 0)
 			if err != nil {
 				continue
 			}
@@ -48,7 +51,6 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 			postsWithComments = append(postsWithComments, postData)
 		}
 
-		// Check if posts are empty and handle the error
 		if len(postsWithComments) == 0 {
 			http.Error(w, "No posts found for the selected interest.", http.StatusNotFound)
 			return
@@ -58,7 +60,6 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 			"Authenticated": false,
 			"Posts":         postsWithComments,
 		}
-
 		config.GLOBAL_TEMPLATE.ExecuteTemplate(w, "index.html", templateData)
 		return
 	}
@@ -72,17 +73,51 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 	user := database.GetUserInfo(userID)
 
 	if r.Method == http.MethodPost {
+		r.ParseMultipartForm(10 << 20)
 		content := r.FormValue("content")
-		r.ParseForm()
-
 		interests := r.Form["interest"]
 		title := r.FormValue("title")
+		
+
+		file, header, err := r.FormFile("photo")
+		var photoURL string
+		
+		if err == nil {
+			defer file.Close()
+		
+			photoDir := "uploads/" 
+		
+			if _, err := os.Stat(photoDir); os.IsNotExist(err) {
+				err := os.MkdirAll(photoDir, 0755)
+				if err != nil {
+					http.Error(w, "Error creating upload directory", http.StatusInternalServerError)
+					return
+				}
+			}
+		
+			photoPath := photoDir + header.Filename
+		
+			dst, err := os.Create(photoPath)
+			if err != nil {
+				fmt.Println("Error saving file:", err)
+				http.Error(w, "Error saving photo", http.StatusInternalServerError)
+				return
+			}
+			defer dst.Close()
+			io.Copy(dst, file)
+		
+			photoURL = "/uploads/" + header.Filename
+			fmt.Println("Photo URL:", photoURL)
+		} else {
+			fmt.Println("ddddd")
+			photoURL =""
+		}
+		
+		
+
 		interest := strings.Join(interests, "#")
-		if content != "" && title != ""  {
-			CreatePost(userID, content, interest, title)
-		}else{
-			http.Redirect(w, r, "/post", http.StatusSeeOther)
-			return
+		if content != "" && title != "" {
+			CreatePost(userID, content, interest, title, photoURL)
 		}
 	}
 
@@ -106,30 +141,24 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 		postsWithComments = append(postsWithComments, postData)
 	}
 
-	// Check if posts are empty and handle the error
-	if len(postsWithComments) == 0 {
-		http.Error(w, "No posts found.", http.StatusNotFound)
-		return
-	}
-
+	
 	templateData := map[string]interface{}{
 		"Authenticated": true,
 		"Username":      user.Username,
 		"Posts":         postsWithComments,
 	}
-
 	config.GLOBAL_TEMPLATE.ExecuteTemplate(w, "index.html", templateData)
 }
 
-func CreatePost(userID int, content, interest string, title string) {
-	stmt, err := database.DB.Prepare("INSERT INTO posts(user_id, content, interest, title) VALUES(?, ?, ?,?)")
+func CreatePost(userID int, content, interest, title, photo string) {
+	stmt, err := database.DB.Prepare("INSERT INTO posts(user_id, content, interest, title, photo) VALUES(?, ?, ?, ?, ?)")
 	if err != nil {
 		fmt.Println("Error preparing statement:", err)
 		return
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(userID, content, interest, title)
+	_, err = stmt.Exec(userID, content, interest, title, photo)
 	if err != nil {
 		fmt.Println("Error executing statement:", err)
 		return
@@ -147,6 +176,7 @@ func GetAllPosts(userID int) ([]Post, error) {
 			p.title,
 			p.interest, 
 			p.created_at,
+			p.photo,
 			(SELECT COUNT(*) FROM post_reactions WHERE post_id = p.id AND reaction_type = 'like') as likes,
 			(SELECT COUNT(*) FROM post_reactions WHERE post_id = p.id AND reaction_type = 'dislike') as dislikes,
 			(SELECT reaction_type FROM post_reactions WHERE post_id = p.id AND user_id = ?) as user_reaction
@@ -157,7 +187,6 @@ func GetAllPosts(userID int) ([]Post, error) {
 	if err != nil {
 		fmt.Println("Error querying posts:", err)
 		return nil, err
-
 	}
 	defer rows.Close()
 
@@ -172,6 +201,7 @@ func GetAllPosts(userID int) ([]Post, error) {
 			&post.Title,
 			&post.Interest,
 			&post.CreatedAt,
+			&post.Photo,
 			&post.Likes,
 			&post.Dislikes,
 			&userReaction,
@@ -181,16 +211,12 @@ func GetAllPosts(userID int) ([]Post, error) {
 			continue
 		}
 		post.UserReaction = userReaction.String
-
-		// Parse CreatedAt string to time.Time using the correct format
 		createdAtTime, err := time.Parse(time.RFC3339, post.CreatedAt)
 		if err != nil {
 			fmt.Println("Error parsing CreatedAt time:", err)
 			continue
 		}
-		// Calculate minutes since the post was created
 		post.MinutesSinceCreation = int(time.Since(createdAtTime).Minutes())
-
 		posts = append(posts, post)
 	}
 	return posts, nil
@@ -238,7 +264,6 @@ func GetCommentsForPost(postID int, currentUserID int) ([]models.Comment, error)
 			fmt.Println("Error parsing CreatedAt time:", err)
 			continue
 		}
-		// Calculate minutes since the post was created
 		comment.MinutesSinceCreation = int(time.Since(createdAtTime).Minutes())
 		comments = append(comments, comment)
 	}
@@ -290,7 +315,8 @@ func GetPostsByInterest(interest string, user int) ([]Post, error) {
 			fmt.Println("Error parsing CreatedAt time:", err)
 			continue
 		}
-		post.MinutesSinceCreation = int(time.Since(createdAtTime).Hours())
+		// Calculate minutes since the post was created
+		post.MinutesSinceCreation = int(time.Since(createdAtTime).Minutes())
 		post.UserReaction = userReaction.String
 
 		posts = append(posts, post)

@@ -39,6 +39,8 @@ func main() {
 
 	forumux.HandleFunc("/",handlers.RootHandler)
 	forumux.HandleFunc("/static/", handlers.StaticHandler)
+	forumux.Handle("/uploads/", http.StripPrefix("/uploads/", http.FileServer(http.Dir("uploads"))))
+
 
 	fmt.Println("Server running on ", SERVERURL)
 	err := http.ListenAndServe(PORT, forumux)

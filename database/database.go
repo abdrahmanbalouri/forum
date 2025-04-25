@@ -32,16 +32,18 @@ func InitDB(dbPath string) {
 			expires_at DATETIME,
 			FOREIGN KEY(user_id) REFERENCES users(id)
 		);
-		
+
 		CREATE TABLE IF NOT EXISTS posts (
-			id INTEGER PRIMARY KEY AUTOINCREMENT,
-			user_id INTEGER,
-			content TEXT,
-			title TEXT,
-			interest TEXT,
-			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-			FOREIGN KEY(user_id) REFERENCES users(id)
-		);
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	user_id INTEGER,
+	content TEXT,
+	title TEXT,
+	interest TEXT,
+	photo TEXT,
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+	FOREIGN KEY(user_id) REFERENCES users(id)
+);
+
 
 		CREATE TABLE IF NOT EXISTS comments (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
