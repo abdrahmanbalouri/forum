@@ -290,8 +290,7 @@ func GetPostsByInterest(interest string, user int) ([]Post, error) {
 			fmt.Println("Error parsing CreatedAt time:", err)
 			continue
 		}
-		// Calculate minutes since the post was created
-		post.MinutesSinceCreation = int(time.Since(createdAtTime).Minutes())
+		post.MinutesSinceCreation = int(time.Since(createdAtTime).Hours())
 		post.UserReaction = userReaction.String
 
 		posts = append(posts, post)

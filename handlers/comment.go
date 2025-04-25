@@ -2,6 +2,8 @@ package handlers
 
 import (
 	// "database/sql"
+
+	"database/sql"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -21,6 +23,18 @@ func CommentHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, "Invalid post ID", http.StatusBadRequest)
 		return
+	}
+
+	var existsID int
+	err = database.DB.QueryRow(
+		"SELECT id FROM posts WHERE id = ?",
+		postID,
+	).Scan(&existsID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			http.Error(w, "Post not found", http.StatusNotFound)
+			return
+		}
 	}
 
 	content := strings.TrimSpace(r.FormValue("content"))

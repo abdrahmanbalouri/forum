@@ -54,8 +54,9 @@ body {
 }
 
 .post-form input,
-.post-form textarea,
-.post-form select {
+.post-form textarea
+
+ {
   width: 100%;
   padding: 12px;
   border: none;
@@ -68,25 +69,27 @@ body {
   outline: none;
   transition: 0.2s;
 }
-
-.post-form input::placeholder,
-.post-form textarea::placeholder {
-  color: #cccccc;
+.interests{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 20px;
+  margin-left: 10px;
 }
 
-.post-form select option {
-  color: black;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+
 
 .post-form input:focus,
-.post-form textarea:focus,
-.post-form select:focus {
+.post-form textarea:focus
+ {
   background: rgba(0, 200, 255, 0.1);
   box-shadow: 0 0 6px rgba(0, 255, 200, 0.5);
 }
 
-button {
+  button {
+    display: block;
+    margin: 0 auto;
+
   background: linear-gradient(90deg, #00ff9d, #00d4ff);
   border: none;
   padding: 10px 16px;
@@ -95,6 +98,7 @@ button {
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
+ 
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 

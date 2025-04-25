@@ -35,9 +35,9 @@ func main() {
 	forumux.HandleFunc("/post", handlers.AuthMidleware(handlers.PostHandler))
 	forumux.HandleFunc("/comment", handlers.AuthMidleware(handlers.CommentHandler))
 	forumux.HandleFunc("/reaction", handlers.AuthMidleware(handlers.ReactionHandler))
-	forumux.HandleFunc("/filter", handlers.FilterHandler)
+	forumux.HandleFunc("/filter", handlers.AuthMidleware(handlers.FilterHandler))
 
-	forumux.HandleFunc("/", handlers.AuthMidleware(handlers.RootHandler))
+	forumux.HandleFunc("/",handlers.RootHandler)
 	forumux.HandleFunc("/static/", handlers.StaticHandler)
 
 	fmt.Println("Server running on ", SERVERURL)
