@@ -44,6 +44,11 @@
                     <p><strong>{{.Post.Username}}</strong>: {{.Post.Content}}</p>
                     <p><em>({{.Post.Interest}})</em></p>
                     <p><em>{{.Post.MinutesSinceCreation}} <strong>minutes ago</strong></em></p>
+                    {{if ne .Post.Photo ""}}
+                    <p><strong>Photo:</strong></p>
+                    <img src="{{.Post.Photo}}" alt="Post Photo" style="max-width:300px;">
+                  {{end}}
+                  
 
                     <div class="reactions">
                         <form action="/reaction" method="post" class="reaction-form">

@@ -279,6 +279,7 @@ func GetPostsByInterest(interest string, user int) ([]Post, error) {
             p.title,
             p.interest, 
             p.created_at,
+			p.photo,
             (SELECT COUNT(*) FROM post_reactions WHERE post_id = p.id AND reaction_type = 'like') as likes,
             (SELECT COUNT(*) FROM post_reactions WHERE post_id = p.id AND reaction_type = 'dislike') as dislikes,
             (SELECT reaction_type FROM post_reactions WHERE post_id = p.id AND user_id = ?) as user_reaction
@@ -303,6 +304,7 @@ func GetPostsByInterest(interest string, user int) ([]Post, error) {
 			&post.Title,
 			&post.Interest,
 			&post.CreatedAt,
+			&post.Photo,
 			&post.Likes,
 			&post.Dislikes,
 			&userReaction,
