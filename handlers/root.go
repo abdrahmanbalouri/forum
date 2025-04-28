@@ -14,6 +14,8 @@ import (
 	"forum/models"
 )
 
+
+
 type Post struct {
 	PostID               int
 	Content              string

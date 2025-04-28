@@ -47,18 +47,14 @@
         {{if .Posts}}
             {{range .Posts}}
                 <div class="post">
-                    <p> <strong>title:</strong> {{.Post.Title}}</p>
-                    <p><strong>{{.Post.Username}}</strong>: {{.Post.Content}} </p>
-                    <p> <strong>Categorie: </strong> {{.Post.Interest}} </p>
-                    {{if ne .Post.Photo ""}}
-                    <p><strong>Photo:</strong></p>
-                    <img src="{{.Post.Photo}}" alt="Post Photo" style="max-width:300px;">
-                  {{end}}
-                  
-                  
-                  
-               
-                    <p><em> {{.Post.MinutesSinceCreation}} <strong> minutes ago</strong> </em></p>
+                    <p> title: {{.Post.Title}}</p>
+                    <p>{{.Post.Username}}: {{.Post.Content}} </p>
+                    <p> Categorie: {{.Post.Interest}} </p>
+                         {{if ne .Post.Photo ""}}
+                     <img src="{{.Post.Photo}}" alt="Post Photo" >
+                      {{end}}
+                    
+                    <strong>{{.Post.MinutesSinceCreation}} minutes ago</strong>
 
                     <div class="reactions">
                         <form action="/reaction" method="post" class="reaction-form">
@@ -88,8 +84,8 @@
                         <div class="comments-list" id="comments-{{.Post.PostID}}" style="display: none;">
                             {{range .Comments}}
                                 <div class="comment">
-                                    <p><strong>{{.Username}}</strong>: {{.Content}}</p>
-                                    <p><em> {{.MinutesSinceCreation}} <strong>minutes ago</strong></em></p>
+                                    <p>{{.Username}}: {{.Content}}</p>
+                                    <p>{{.MinutesSinceCreation}} minutes ago</p>
                                     <div class="reactions">
                                         <form action="/reaction" method="post" class="reaction-form">
                                             <input type="hidden" name="target_type" value="comment">

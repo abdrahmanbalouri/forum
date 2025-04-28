@@ -42,12 +42,13 @@
                 <div class="post">
                     <p>{{.Post.Title}}</p>
                     <p><strong>{{.Post.Username}}</strong>: {{.Post.Content}}</p>
-                    <p><em>({{.Post.Interest}})</em></p>
-                    <p><em>{{.Post.MinutesSinceCreation}} <strong>minutes ago</strong></em></p>
+                    <p>({{.Post.Interest}})</p>
+                     
                     {{if ne .Post.Photo ""}}
-                    <p><strong>Photo:</strong></p>
-                    <img src="{{.Post.Photo}}" alt="Post Photo" style="max-width:300px;">
-                  {{end}}
+                     <img src="{{.Post.Photo}}" alt="Post Photo">
+                    {{end}}
+                    <strong>{{.Post.MinutesSinceCreation}} minutes ago</strong> 
+                   
                   
 
                     <div class="reactions">
