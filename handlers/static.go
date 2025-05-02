@@ -35,7 +35,6 @@ func StaticHandler2(w http.ResponseWriter, r *http.Request) {
 	}
 	url := r.URL.Path[1:]
 	file, err := os.Stat(url)
-	fmt.Println(url)
 	if err != nil {
 		if os.IsNotExist(err) {
 			http.Error(w, "Error Not Found", http.StatusNotFound)

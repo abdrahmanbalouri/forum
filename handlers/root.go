@@ -98,6 +98,7 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		
 			photoPath := photoDir + header.Filename
+			
 		
 			dst, err := os.Create(photoPath)
 			if err != nil {
@@ -109,7 +110,6 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 			io.Copy(dst, file)
 		
 			photoURL = "/uploads/" + header.Filename
-			fmt.Println("Photo URL:", photoURL)
 		} else {
 			fmt.Println("ddddd")
 			photoURL =""
@@ -166,7 +166,7 @@ func CreatePost(userID int, content, interest, title, photo string) {
 		return
 	}
 
-	fmt.Println("Post created:", content, interest)
+	//fmt.Println("Post created:", content, interest)
 }
 
 func GetAllPosts(userID int) ([]Post, error) {
