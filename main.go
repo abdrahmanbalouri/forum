@@ -39,7 +39,7 @@ func main() {
 
 	forumux.HandleFunc("/",handlers.RootHandler)
 	forumux.HandleFunc("/static/", handlers.StaticHandler)
-	forumux.Handle("/uploads/", http.StripPrefix("/uploads/", http.FileServer(http.Dir("uploads"))))
+	forumux.HandleFunc("uploads/", handlers.StaticHandler2)
 
 
 	fmt.Println("Server running on ", SERVERURL)
